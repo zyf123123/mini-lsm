@@ -18,6 +18,7 @@ use anyhow::{Result, anyhow};
 use clap::Parser;
 use console::style;
 use duct::cmd;
+use std::fs;
 
 #[derive(clap::Parser, Debug)]
 struct CopyTestAction {
@@ -157,11 +158,11 @@ fn copy_test_case(test: CopyTestAction) -> Result<()> {
     let test_filename = format!("week{}_day{}.rs", test.week, test.day);
     let src = format!("{}/{}", src_dir, test_filename);
     let target = format!("{}/{}", target_dir, test_filename);
-    cmd!("cp", src, target).run()?;
+    fs::copy(src, target)?;
     let test_filename = "harness.rs";
     let src = format!("{}/{}", src_dir, test_filename);
     let target = format!("{}/{}", target_dir, test_filename);
-    cmd!("cp", src, target).run()?;
+    fs::copy(src, target)?;
     let mut test_file = Vec::new();
     for file in Path::new(&target_dir).read_dir()? {
         let file = file?;
